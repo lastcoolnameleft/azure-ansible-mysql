@@ -1,0 +1,25 @@
+# The following playbook is executed against all the servers in the cluster including master candidates, slaves, mha nodes and manager manager
+# It is to be run as follows from the current directory
+# ansible-playbook setup-dependencies.yml
+---
+- hosts: mha_servers
+  remote_user: root
+  vars:
+    mha_rpm_artifacts:
+      - https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mysql-master-ha/mha4mysql-manager-0.54-0.el5.noarch.rpm
+      - https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mysql-master-ha/mha4mysql-node-0.54-0.el5.noarch.rpm
+  tasks:
+  - name: upgrade all packages
+    yum:
+      name: '*'
+      state: latest
+  - name: install epel
+    yum:
+      name: 'epel-release'
+      state: latest
+  - name: Install MHA
+    tags:
+      - install-mha
+    yum:
+      name: "{{ mha_rpm_artifacts }}"
+      state: latest

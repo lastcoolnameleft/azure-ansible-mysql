@@ -1,0 +1,40 @@
+all:
+  hosts:
+    haproxy_1:
+      ansible_host: PUBLIC_IP
+    mysql_master_1:
+      ansible_host: PUBLIC_IP
+    mysql_master_2:
+      ansible_host: PUBLIC_IP
+    mysql_slave_1:
+      ansible_host: PUBLIC_IP
+    mysql_slave_2:
+      ansible_host: PUBLIC_IP
+  vars:
+    ansible_user: USER
+    ansible_ssh_public_key: SSH_PUBLIC_KEY
+    azure_resource_base: mha
+    mysql_replication_master: MYSQL_MASTER_1_PUBLIC_IP
+    mysql_replication_user:
+      name: repl
+      password: REPL_PAA
+      master_host: MYSQL_MASTER_1_PRIVATE_IP
+      host: "%"
+  children:
+    mysql_servers:
+      hosts:
+        mysql_master_1:
+        mysql_slave_1:
+        mysql_slave_2:
+    mysql_master:
+      hosts:
+        mysql_master_1:
+    mysql_slave_1:
+      hosts:
+        mysql_slave_1:
+    mysql_slave_2:
+      hosts:
+        mysql_slave_2:
+    mha_servers:
+      hosts:
+        haproxy_1:

@@ -1,0 +1,56 @@
+- hosts: mysql_servers
+  remote_user: root
+  vars_files:
+    - vars/mysql_servers.yml
+  vars:
+    mysql_rpm:
+      - mysql-community-server
+      - mysql-community-client
+      - MySQL-python
+      - libselinux-python
+      - https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/mysql-master-ha/mha4mysql-node-0.54-0.el5.noarch.rpm
+  tasks:
+
+#  - name: Install latest epel-release x86_64 rpm
+#    yum:
+#      name: https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+#      state: present
+
+
+  - name: Install MySQL Community Server Yum Repo RPM GPG keys
+    tags:
+      - install-mysql
+    yum:
+      name: http://repo.mysql.com/mysql-community-release-el6-5.noarch.rpm
+      state: present
+      
+  - name: Install RPMs
+    tags:
+      - install-rpms
+    yum:
+      name: "{{ mysql_rpm }}"
+      state: latest
+
+- hosts: mysql_master
+  become: yes
+  vars_files:
+    - vars/mysql_servers.yml
+    - vars/mysql_master.yml
+  roles:
+    - role: ansible-role-mysql
+
+- hosts: mysql_slave_1
+  become: yes
+  vars_files:
+    - vars/mysql_servers.yml
+    - vars/mysql_slave_1.yml
+  roles:
+    - role: ansible-role-mysql
+
+- hosts: mysql_slave_2
+  become: yes
+  vars_files:
+    - vars/mysql_servers.yml
+    - vars/mysql_slave_2.yml
+  roles:
+    - role: ansible-role-mysql

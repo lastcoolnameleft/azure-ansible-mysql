@@ -24,3 +24,7 @@ The following installation steps are followed by the mha-setup.yaml and mysql-se
 * Setup MySQL replication between the MySQL Master master and the MySQL agents
 * Install MHA on each MySQL + HA
 * Setup MHA for replication failover
+
+## Documentation
+
+Since this project never hit production, documentation is sparse.  Please feel free to contact me for any additional details and I will update this repo to support you.
